@@ -1,79 +1,87 @@
-var animals = [
-    "bear",
-    "eagle",
-    "dog",
-    "snake",
-    "cat",
-    "turkey",
-    "deer",
-    "goose",
-    "boar",
-    "pig",
-    "cow",
-    "zebra",
-    "rhino"
-];
-
-console.log(animals.length)
-
-window.onload = function(){
-    buttonSetup();
-} 
-
-function buttonSetup(){
-$("#buttons").empty();
-for(var i = 0; i < animals.length; i ++) {
-    console.log(animals[i]);
-    var button = $("<button>");
-    button.attr("data-name", animals[i]);      
-    button.text(animals[i]);  
-    $("#buttons").append(button);
-}};
-
-$("#add-animal").on("click", function(event) {
+$(document).ready(function(){
+    var animals = [
+        "bear",
+        "eagle",
+        "dog",
+        "snake",
+        "cat",
+        "turkey",
+        "deer",
+        "goose",
+        "boar",
+        "pig",
+        "cow",
+        "zebra",
+        "rhino"
+    ];
     
-    event.preventDefault();
-
-    var inputAnimal = $("#animal-input").val().trim();
-    console.log(inputAnimal);
-    animals.push(inputAnimal);
+    console.log(animals.length)
+    
+    function buttonSetup(){
+        $("#buttons").empty();
+        for(var i = 0; i < animals.length; i ++) {
+            console.log(animals[i]);
+            var button = $("<button>");
+            button.addClass("animal-btn");
+            button.attr("id", animals[i]);   
+            button.text(animals[i]);  
+            $("#buttons").append(button);
+    }};
 
     buttonSetup();
-});
 
-$("button").on("click", function() {
-    var animal = $(this).attr("data-name");
-
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-      animal + "&api_key=KIOuCmP0TkLk98ljMtqMIBiE56ry5jZo";
-
-    $.ajax({
-      url: queryURL,
-      method: "GET"
-    })
-
-    .then(function(response){
+    $("#add").on("click", function(event) {
         
-        var gifResults = response.data;
-        
-        for(var j = 0; j < gifResults.length; j++){
-
-            if(results[j].rating !== "r") {
-
-                var gifDiv = $("<div>");
-                var rating = results[j].rating;
-
-                var p = $("<p>").text("Rating: " + rating);
-
-                var animalImage = $("<img>");
-                animalImage.attr("src", results[j].image.fixed_height.url);
-
-                gifDiv.append(p);
-                gifDiv.append(animalImage);
-
-                $("#gif-view").prepend(gifDiv);
-            }
-        }
+        event.preventDefault();
+    
+        var inputAnimal = $("#input").val().trim();
+        console.log(inputAnimal);
+        animals.push(inputAnimal);
+        $("#input").val("");
+    
+        buttonSetup();
     });
 
-})
+    $("#buttons").on("click", ".animal-btn", function() {
+        $("#gif-view").empty();
+        var animalName = $(this).attr("id").trim();
+        console.log(animalName);
+    
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+          animalName + "&limit=10&api_key=KIOuCmP0TkLk98ljMtqMIBiE56ry5jZo";
+        console.log(queryURL);
+
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).then(function(response){
+            
+            var results = response.data;
+            
+            for(var j = 0; j < gifResults.length; j++){
+    
+                
+                    console.log(results.length)
+                    var gifDiv = $("<div>");
+                    var rating = results[j].rating;
+    
+                    var p = $("<p>").text("Rating: " + rating);
+    
+                    var animalImage = $("<img>");
+                    animalImage.attr("src", results[j].image.fixed_height.url);
+                    animalImage.addClass("gifAnimal");
+                    gifDiv.append(p);
+                    gifDiv.append(animalImage);
+    
+                    $("#gif-view").append(gifDiv);
+                
+            }
+        });
+    
+    })
+});
+
+
+
+
+
